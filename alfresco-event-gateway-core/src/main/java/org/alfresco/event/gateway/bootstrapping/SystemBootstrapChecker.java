@@ -1,0 +1,49 @@
+/*
+ * Copyright 2021-2021 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.alfresco.event.gateway.bootstrapping;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.core.annotation.Order;
+
+/**
+ * Component that checks if the system is bootstrapping or not.
+ */
+@Order
+public class SystemBootstrapChecker {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SystemBootstrapChecker.class);
+
+    private boolean bootstrapping = true;
+
+    /**
+     * Get if the system is currently bootstrapping or not.
+     *
+     * @return <code>true</code> if the system is bootstrapping, <code>false</code> otherwise
+     */
+    public boolean isBootstrapping() {
+        LOGGER.debug("System bootstrap flag {}", bootstrapping);
+        return bootstrapping;
+    }
+
+    @EventListener
+    public void onApplicationStartedEvent(ApplicationStartedEvent event) {
+        LOGGER.info("Alfresco Event Gateway properly bootstrapped");
+        this.bootstrapping = false;
+    }
+}
