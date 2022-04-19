@@ -49,7 +49,6 @@ services:
 
   alfresco:
     image: alfresco/alfresco-content-repository-community:7.1.0-A9
-    mem_limit: 1500m
     environment:
       # use 'export HOST_IP=xxx' for specifying the host ip before starting docker compose
       # the following line will produce the result using 'ifconfig'
@@ -159,18 +158,26 @@ services:
       - 61616:61616 # OpenWire
       - 61613:61613 # STOMP
 
+  digital-workspace:
+    image: alfresco/alfresco-content-app:2.7.0
+    mem_limit: 128m
+    environment:
+      APP_CONFIG_AUTH_TYPE: "BASIC"
+      BASE_PATH: ./
+
   proxy:
     image: alfresco/alfresco-acs-nginx:3.1.1
     mem_limit: 128m
     environment:
       DISABLE_PROMETHEUS: "true"
       DISABLE_SYNCSERVICE: "true"
-      DISABLE_ADW: "true"
     depends_on:
       - alfresco
+      - digital-workspace
     ports:
       - 8080:8080
     links:
+      - digital-workspace
       - alfresco
       - share
 
